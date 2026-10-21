@@ -6,11 +6,11 @@ async function requestJson(url) {
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
   try {
     const response = await fetch(url, { signal: controller.signal });
-    if (!response.ok) throw new Error(`Không thể tải dữ liệu (${response.status}).`);
+    if (!response.ok) throw new Error(t("api.error", { status: response.status }));
     return await response.json();
   } catch (error) {
     if (error?.name === "AbortError") {
-      throw new Error("Máy chủ phản hồi quá lâu. Vui lòng kiểm tra mạng và thử lại.");
+      throw new Error(t("api.timeout"));
     }
     throw error;
   } finally {

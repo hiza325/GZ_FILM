@@ -6,6 +6,21 @@
   <meta name="theme-color" content="#101114">
   <meta name="description" content="Khám phá phim mới và phim được yêu thích trên GZ FILM.">
   <title>GZ FILM — Khám phá phim</title>
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("gz-film-theme");
+        if (theme !== "light" && theme !== "dark") {
+          theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
+        document.documentElement.dataset.theme = theme;
+        var lang = localStorage.getItem("gz-film-lang");
+        if (lang !== "vi" && lang !== "en") lang = "vi";
+        document.documentElement.lang = lang;
+        document.documentElement.dataset.lang = lang;
+      } catch (error) {}
+    })();
+  </script>
   <link rel="icon" href="assets/gz-film-logo.png" type="image/png">
   <link rel="preconnect" href="https://phimimg.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -15,76 +30,132 @@
   <link rel="stylesheet" href="css/movie-card.css">
   <link rel="stylesheet" href="css/player.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
   <header class="header">
-    <a class="logo" href="#home" aria-label="GZ FILM — Trang chủ">
+    <a class="logo" href="#home" aria-label="GZ FILM — Trang chủ" data-i18n-aria="logo.aria">
       <img src="assets/gz-film-logo.png" alt="GZ FILM" width="43" height="43">
       <span>GZ <b>FILM</b></span>
     </a>
 
-    <nav class="nav-menu" aria-label="Danh mục phim">
-      <button class="nav-link is-active" type="button" data-label="Phim mới cập nhật" data-action="latest">Mới cập nhật</button>
-      <button class="nav-link" type="button" data-label="Phim bộ" data-action="category" data-category="phim-bo">Phim bộ</button>
-      <button class="nav-link" type="button" data-label="Phim lẻ" data-action="category" data-category="phim-le">Phim lẻ</button>
-      <button class="nav-link" type="button" data-label="Hoạt hình" data-action="category" data-category="hoat-hinh">Hoạt hình</button>
-      <button class="nav-link" type="button" data-label="TV Shows" data-action="category" data-category="tv-shows">TV Shows</button>
+    <nav class="nav-menu" aria-label="Danh mục phim" data-i18n-aria="nav.label">
+      <button class="nav-link is-active" type="button" data-nav="latest" data-action="latest" data-i18n="nav.latest">Mới cập nhật</button>
+      <button class="nav-link" type="button" data-nav="series" data-action="category" data-category="phim-bo" data-i18n="nav.series">Phim bộ</button>
+      <button class="nav-link" type="button" data-nav="movies" data-action="category" data-category="phim-le" data-i18n="nav.movies">Phim lẻ</button>
+      <button class="nav-link" type="button" data-nav="anime" data-action="category" data-category="hoat-hinh" data-i18n="nav.anime">Hoạt hình</button>
+      <button class="nav-link" type="button" data-nav="tv" data-action="category" data-category="tv-shows" data-i18n="nav.tv">TV Shows</button>
     </nav>
 
     <label class="search-wrap" for="searchInput">
       <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg>
-      <input type="search" id="searchInput" class="search-input" placeholder="Tìm tên phim..." autocomplete="off">
+      <input type="search" id="searchInput" class="search-input" placeholder="Tìm tên phim..." autocomplete="off" data-i18n-placeholder="search.placeholder">
       <kbd>/</kbd>
     </label>
+
+    <div class="header-tools">
+      <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Chuyển giao diện sáng/tối" aria-pressed="false" data-i18n-aria="theme.toggle">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"></circle>
+          <path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.6 14.3A8.7 8.7 0 0 1 9.7 3.4a8.8 8.8 0 1 0 10.9 10.9Z"></path>
+        </svg>
+      </button>
+
+      <div class="lang-switch" role="group" aria-label="Ngôn ngữ" data-i18n-aria="lang.label">
+        <button class="lang-btn is-active" type="button" data-lang="vi" aria-pressed="true" title="Tiếng Việt">
+          <svg class="flag" viewBox="0 0 60 40" aria-hidden="true">
+            <rect width="60" height="40" fill="#DA251D"></rect>
+            <polygon fill="#FFE600" points="30,11 32.12,17.09 38.56,17.22 33.42,21.11 35.29,27.28 30,26.4 24.71,27.28 26.58,21.11 21.44,17.22 27.88,17.09"></polygon>
+          </svg>
+          <span>VI</span>
+        </button>
+        <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" title="English">
+          <svg class="flag" viewBox="0 0 60 30" aria-hidden="true">
+            <clipPath id="ukFlagClip"><rect width="60" height="30"></rect></clipPath>
+            <g clip-path="url(#ukFlagClip)">
+              <rect width="60" height="30" fill="#012169"></rect>
+              <path d="M0 0 60 30M60 0 0 30" stroke="#fff" stroke-width="6"></path>
+              <path d="M0 0 60 30M60 0 0 30" stroke="#C8102E" stroke-width="2"></path>
+              <path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path>
+              <path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path>
+            </g>
+          </svg>
+          <span>EN</span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <main id="home">
-    <section class="banner" aria-labelledby="heroTitle">
+    <section class="banner" id="banner" aria-labelledby="heroTitle">
+      <div class="banner-layers" id="bannerLayers" aria-hidden="true"></div>
       <div class="banner-overlay"></div>
-      <div class="banner-content">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Rạp phim của bạn</span>
-        <h1 id="heroTitle">Câu chuyện hay<br>luôn đáng để xem.</h1>
-        <p>Khám phá những bộ phim mới và chọn ngay bộ phim phù hợp với bạn.</p>
-        <a class="banner-btn" href="#movies">Khám phá phim <span aria-hidden="true">↓</span></a>
+      <div class="banner-content" id="bannerContent">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="banner.eyebrow">RẠP PHIM CỦA BẠN</span></span>
+        <h1 id="heroTitle" data-i18n-html="banner.title">Câu chuyện hay<br>luôn đáng để xem.</h1>
+        <p class="hero-original" id="heroOriginal" hidden></p>
+        <div class="hero-meta" id="heroMeta" hidden></div>
+        <p class="banner-desc" id="heroDesc" data-i18n="banner.desc">Khám phá những bộ phim mới và chọn ngay bộ phim phù hợp với bạn.</p>
+        <div class="banner-actions">
+          <button class="banner-btn" id="heroCta" type="button">
+            <span id="heroCtaLabel" data-i18n="banner.cta">Khám phá phim</span>
+            <span class="banner-arrow" id="heroCtaIcon" aria-hidden="true">↓</span>
+          </button>
+        </div>
       </div>
-      <div class="hero-note"><span>GZ</span><span>CHỌN PHIM<br>THEO CÁCH CỦA BẠN</span></div>
+      <div class="banner-thumbs" id="bannerThumbs" role="group" aria-label="Phim nổi bật" data-i18n-aria="banner.thumbsAria" hidden></div>
+      <div class="hero-note"><span>GZ</span><span data-i18n-html="hero.note">CHỌN PHIM<br>THEO CÁCH CỦA BẠN</span></div>
+    </section>
+
+    <section class="continue-section" id="continueSection" aria-labelledby="continueTitle" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker" data-i18n="continue.kicker">XEM TIẾP</p>
+          <h2 class="section-title" id="continueTitle" data-i18n="continue.title">Tiếp tục xem</h2>
+        </div>
+        <button class="clear-history" id="clearHistory" type="button" data-i18n="continue.clear">Xoá lịch sử</button>
+      </div>
+      <div class="continue-grid" id="continueGrid"></div>
     </section>
 
     <section class="movies-section" id="movies" aria-labelledby="sectionTitle">
       <div class="section-heading">
         <div>
-          <p class="section-kicker">DÀNH CHO BẠN</p>
+          <p class="section-kicker" data-i18n="section.kicker">DÀNH CHO BẠN</p>
           <h2 class="section-title" id="sectionTitle">Phim mới cập nhật</h2>
         </div>
         <span class="results-label" id="resultsLabel"></span>
       </div>
-      <div class="filter-bar" aria-label="Lọc phim">
+      <div class="filter-bar" aria-label="Lọc phim" data-i18n-aria="filters.aria">
         <label class="filter-control">
-          <span class="visually-hidden">Lọc theo thể loại</span>
-          <select id="genreFilter" aria-label="Thể Loại">
-            <option value="">Thể Loại</option>
+          <span class="visually-hidden" data-i18n="filters.genre">Thể Loại</span>
+          <select id="genreFilter" aria-label="Thể Loại" data-i18n-aria="filters.genre">
+            <option value="" data-i18n="filters.genre">Thể Loại</option>
           </select>
           <span class="filter-chevron" aria-hidden="true"></span>
         </label>
         <label class="filter-control">
-          <span class="visually-hidden">Lọc theo quốc gia</span>
-          <select id="countryFilter" aria-label="Quốc Gia">
-            <option value="">Quốc Gia</option>
+          <span class="visually-hidden" data-i18n="filters.country">Quốc Gia</span>
+          <select id="countryFilter" aria-label="Quốc Gia" data-i18n-aria="filters.country">
+            <option value="" data-i18n="filters.country">Quốc Gia</option>
           </select>
           <span class="filter-chevron" aria-hidden="true"></span>
         </label>
         <label class="filter-control">
-          <span class="visually-hidden">Lọc theo danh sách</span>
-          <select id="listFilter" aria-label="Danh Sách">
-            <option value="phim-moi-cap-nhat">Danh Sách: Mới cập nhật</option>
-            <option value="phim-bo">Danh Sách: Phim bộ</option>
-            <option value="phim-le">Danh Sách: Phim lẻ</option>
-            <option value="hoat-hinh">Danh Sách: Hoạt hình</option>
-            <option value="tv-shows">Danh Sách: TV Shows</option>
+          <span class="visually-hidden" data-i18n="filters.list">Danh Sách</span>
+          <select id="listFilter" aria-label="Danh Sách" data-i18n-aria="filters.list">
+            <option value="phim-moi-cap-nhat" data-i18n="filters.listLatest">Danh Sách: Mới cập nhật</option>
+            <option value="phim-bo" data-i18n="filters.listSeries">Danh Sách: Phim bộ</option>
+            <option value="phim-le" data-i18n="filters.listMovies">Danh Sách: Phim lẻ</option>
+            <option value="hoat-hinh" data-i18n="filters.listAnime">Danh Sách: Hoạt hình</option>
+            <option value="tv-shows" data-i18n="filters.listTv">Danh Sách: TV Shows</option>
           </select>
           <span class="filter-chevron" aria-hidden="true"></span>
         </label>
-        <button class="clear-filters" id="clearFilters" type="button">Xóa lọc</button>
+        <button class="clear-filters" id="clearFilters" type="button" data-i18n="filters.clear">Xóa lọc</button>
       </div>
       <div class="movie-grid" id="movieGrid" aria-live="polite" aria-busy="true"></div>
       <nav class="pagination" id="pagination" aria-label="Phân trang phim" hidden></nav>
@@ -93,39 +164,55 @@
 
   <div class="welcome-backdrop" id="welcomeToast" role="dialog" aria-modal="true" aria-labelledby="welcomeMessage" hidden>
     <section class="welcome-card">
-      <button class="welcome-close" id="welcomeClose" type="button" aria-label="Đóng thông báo">×</button>
+      <button class="welcome-close" id="welcomeClose" type="button" aria-label="Đóng thông báo" data-i18n-aria="welcome.closeAria">×</button>
       <img class="welcome-image" src="assets/welcome-meme.jpg" alt="Mèo đội mũ đen tại sân bay" width="142" height="142">
-      <p class="welcome-message" id="welcomeMessage">Bạn đang xem phim trên <strong>GZ FILM</strong>-<span>A Product of the GZ Group</span></p>
+      <p class="welcome-message" id="welcomeMessage" data-i18n-html="welcome.message">Bạn đang xem phim trên <strong>GZ FILM</strong>-<span>A Product of the GZ Group</span></p>
     </section>
   </div>
 
-  <footer class="footer"><a class="footer-brand" href="#home">GZ FILM</a><span>Khám phá câu chuyện bạn yêu thích.</span><span class="copyright">Bản quyền thuộc về GZ Group</span><a href="#home" class="back-top">Lên đầu trang ↑</a></footer>
+  <footer class="footer">
+    <a class="footer-brand" href="#home">GZ FILM</a>
+    <span data-i18n="footer.tagline">Khám phá câu chuyện bạn yêu thích.</span>
+    <span class="copyright" data-i18n="footer.copyright">Bản quyền thuộc về GZ Group</span>
+    <a href="#home" class="back-top" data-i18n="footer.top">Lên đầu trang ↑</a>
+  </footer>
 
   <div class="player-modal" id="playerModal" role="dialog" aria-modal="true" aria-label="Trình phát phim" aria-hidden="true">
     <div class="player-box">
-      <button class="close-btn" id="closeBtn" type="button" aria-label="Đóng trình phát">×</button>
+      <button class="close-btn" id="closeBtn" type="button" aria-label="Đóng trình phát" data-i18n-aria="player.closeAria">×</button>
       <div class="player-layout">
-        <section class="video-column" aria-label="Video đang phát">
+        <section class="video-column" aria-label="Video đang phát" data-i18n-aria="player.videoAria">
           <p class="player-title" id="playerTitle" aria-live="polite">Đang phát</p>
+          <div class="resume-prompt" id="resumePrompt" hidden>
+            <p><span data-i18n="player.resume">Bạn đã xem đến</span> <strong id="resumeTime">00:00</strong> <span id="resumeEpisode"></span></p>
+            <div class="resume-actions">
+              <button class="resume-continue" id="resumeContinue" type="button" data-i18n="player.continue">Xem tiếp</button>
+              <button class="resume-restart" id="resumeRestart" type="button" data-i18n="player.restart">Xem lại từ đầu</button>
+            </div>
+          </div>
           <video id="videoPlayer" controls playsinline preload="metadata"></video>
-          <p class="player-hint">Nhấn Esc hoặc nút đóng để thoát</p>
+          <p class="player-hint" data-i18n="player.hint">Nhấn Esc hoặc nút đóng để thoát</p>
         </section>
-        <aside class="episode-panel" id="episodePanel" aria-label="Danh sách tập" hidden>
+        <aside class="episode-panel" id="episodePanel" aria-label="Danh sách tập" data-i18n-aria="player.episodesAria" hidden>
           <div class="episode-heading">
-            <div><span class="episode-kicker">XEM TIẾP</span><h2 id="episodeHeadingTitle">Các tập</h2></div>
+            <div><span class="episode-kicker" data-i18n="player.kicker">XEM TIẾP</span><h2 id="episodeHeadingTitle">Các tập</h2></div>
             <span class="episode-count" id="episodeCount"></span>
           </div>
-          <div class="server-tabs" id="serverTabs" role="tablist" aria-label="Chọn nguồn phát" hidden></div>
-          <div class="episode-list" id="episodeList" role="group" aria-label="Chọn tập phim"></div>
+          <div class="server-tabs" id="serverTabs" role="tablist" aria-label="Chọn nguồn phát" data-i18n-aria="player.serversAria" hidden></div>
+          <div class="episode-list" id="episodeList" role="group" aria-label="Chọn tập phim" data-i18n-aria="player.episodeListAria"></div>
         </aside>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/history.js"></script>
   <script src="js/app.js"></script>
   <script src="js/player.js"></script>
+  <script src="js/banner.js"></script>
   <script src="js/search.js"></script>
   <script src="js/category.js"></script>
   <script src="js/filters.js"></script>

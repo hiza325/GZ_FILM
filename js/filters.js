@@ -4,8 +4,20 @@ const listFilter = document.getElementById("listFilter");
 const clearFiltersButton = document.getElementById("clearFilters");
 const FILTER_CACHE_KEY = "gz-film-filter-options-v1";
 
+const listLabelKeys = {
+  "phim-moi-cap-nhat": "nav.latest",
+  "phim-bo": "nav.series",
+  "phim-le": "nav.movies",
+  "hoat-hinh": "nav.anime",
+  "tv-shows": "nav.tv"
+};
+
 function filterItems(response) {
   return response?.data?.items || response?.items || [];
+}
+
+function selectedFilterName(select) {
+  return select.selectedOptions[0]?.textContent || "";
 }
 
 function toFilterOptions(items) {
@@ -15,14 +27,17 @@ function toFilterOptions(items) {
 }
 
 function addFilterOptions(select, items) {
+  const placeholder = select.querySelector('option[value=""]');
+  const fragment = document.createDocumentFragment();
   items.forEach((item) => {
     if (!item?.slug || !item?.name) return;
     if (select.querySelector(`option[value="${CSS.escape(item.slug)}"]`)) return;
     const option = document.createElement("option");
     option.value = item.slug;
     option.textContent = item.name;
-    select.append(option);
+    fragment.append(option);
   });
+  placeholder.after(fragment);
 }
 
 function readFilterCache() {
@@ -70,22 +85,22 @@ async function initializeFilterOptions() {
   if (payload.genres.length || payload.countries.length) writeFilterCache(payload);
 }
 
-function selectedFilterName(select) {
-  return select.selectedOptions[0]?.textContent || "";
-}
-
 function applyFilters() {
   searchInput.value = "";
   setActiveNav("");
-  const listName = selectedFilterName(listFilter).replace(/^Danh Sách:\s*/, "");
-  const activeFilters = [genreFilter.value && selectedFilterName(genreFilter), countryFilter.value && selectedFilterName(countryFilter)].filter(Boolean);
-  const title = activeFilters.length ? `${listName} · ${activeFilters.join(" · ")}` : listName;
-  loadMovies(title, (page) => fetchFilteredMovies({
+  loadMovies(() => {
+    const listName = t(listLabelKeys[listFilter.value] || "nav.latest");
+    const activeFilters = [
+      genreFilter.value && selectedFilterName(genreFilter),
+      countryFilter.value && selectedFilterName(countryFilter)
+    ].filter(Boolean);
+    return activeFilters.length ? `${listName} · ${activeFilters.join(" · ")}` : listName;
+  }, (page) => fetchFilteredMovies({
     list: listFilter.value,
     genre: genreFilter.value,
     country: countryFilter.value,
     page
-  }));
+  }), "");
 }
 
 function resetFiltersForNavigation(list = "phim-moi-cap-nhat") {

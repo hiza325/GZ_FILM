@@ -17,9 +17,9 @@ function syncBodyScroll() {
   document.body.classList.toggle("modal-open", playerOpen || welcomeOpen);
 }
 
-function setActiveNav(label) {
+function setActiveNav(navKey) {
   document.querySelectorAll(".nav-link").forEach((button) => {
-    const isActive = button.dataset.label === label;
+    const isActive = button.dataset.nav === navKey;
     button.classList.toggle("is-active", isActive);
     if (isActive) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
@@ -63,7 +63,7 @@ function showMessage(title, message, retry) {
   if (retry) {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = "Thử tải lại";
+    button.textContent = t("state.retry");
     button.addEventListener("click", retry, { once: true });
     state.append(button);
   }
@@ -81,10 +81,10 @@ function renderMovies(movieList) {
   movieGrid.replaceChildren();
   const movies = Array.isArray(movieList) ? movieList.filter(Boolean) : [];
   currentMovies = movies;
-  resultsLabel.textContent = movies.length ? `${movies.length} phim` : "";
+  resultsLabel.textContent = movies.length ? t("movie.count", { count: movies.length }) : "";
 
   if (!movies.length) {
-    showMessage("Chưa tìm thấy phim", "Thử từ khóa khác hoặc chọn một danh mục phim khác.");
+    showMessage(t("state.emptyTitle"), t("state.emptyDesc"));
     return;
   }
 
@@ -99,7 +99,7 @@ function renderMovies(movieList) {
     const source = posterUrl(movie);
     if (source) {
       image.src = source;
-      image.alt = `Poster phim ${movie.name || ""}`;
+      image.alt = movie.name ? `${movie.name}` : "";
       image.className = "movie-image";
       image.loading = "lazy";
       image.decoding = "async";
@@ -114,14 +114,14 @@ function renderMovies(movieList) {
 
     const badge = document.createElement("span");
     badge.className = "movie-badge";
-    badge.textContent = movie.episode_current || movie.quality || "Đề xuất";
+    badge.textContent = movie.episode_current || movie.quality || t("movie.suggested");
     posterWrap.append(badge);
 
     const info = document.createElement("div");
     info.className = "movie-info";
     const title = document.createElement("h3");
     title.className = "movie-title";
-    title.textContent = movie.name || "Chưa có tên phim";
+    title.textContent = movie.name || t("movie.unknownName");
     title.title = movie.name || "";
     const originalTitle = document.createElement("p");
     originalTitle.className = "movie-original-title";
@@ -131,16 +131,16 @@ function renderMovies(movieList) {
     meta.className = "movie-meta";
     const year = document.createElement("span");
     year.className = "movie-year";
-    year.textContent = movie.year || "Chưa rõ năm";
+    year.textContent = movie.year || t("movie.unknownYear");
     const category = document.createElement("span");
-    category.textContent = movie.lang || movie.quality || "Phim";
+    category.textContent = movie.lang || movie.quality || t("movie.defaultLabel");
     meta.append(year, category);
     const watchButton = document.createElement("button");
     watchButton.type = "button";
     watchButton.className = "watch-btn";
-    watchButton.textContent = "Xem phim";
+    watchButton.textContent = t("movie.watch");
     watchButton.disabled = !movie.slug;
-    watchButton.addEventListener("click", () => watchMovie(movie.slug, movie.name));
+    watchButton.addEventListener("click", () => watchMovie(movie.slug, movie.name, source));
     info.append(title, originalTitle, meta, watchButton);
     card.append(posterWrap, info);
     cards.append(card);
@@ -174,6 +174,7 @@ function createPageButton(label, ariaLabel, page, disabled) {
 
 function renderPagination(currentPage, totalPages) {
   pagination.replaceChildren();
+  pagination.setAttribute("aria-label", t("pagination.aria"));
   if (!totalPages || totalPages <= 1) {
     pagination.hidden = true;
     return;
@@ -181,7 +182,7 @@ function renderPagination(currentPage, totalPages) {
   pagination.hidden = false;
   const fragment = document.createDocumentFragment();
 
-  const prev = createPageButton("‹", "Trang trước", currentPage - 1, currentPage <= 1);
+  const prev = createPageButton("‹", t("pagination.prev"), currentPage - 1, currentPage <= 1);
   prev.classList.add("pagination-arrow");
   fragment.append(prev);
 
@@ -194,7 +195,7 @@ function renderPagination(currentPage, totalPages) {
       fragment.append(gap);
       return;
     }
-    const button = createPageButton(String(page), `Trang ${page}`, page, false);
+    const button = createPageButton(String(page), t("pagination.page", { number: page }), page, false);
     if (page === currentPage) {
       button.classList.add("is-current");
       button.setAttribute("aria-current", "page");
@@ -202,13 +203,13 @@ function renderPagination(currentPage, totalPages) {
     fragment.append(button);
   });
 
-  const next = createPageButton("›", "Trang sau", currentPage + 1, currentPage >= totalPages);
+  const next = createPageButton("›", t("pagination.next"), currentPage + 1, currentPage >= totalPages);
   next.classList.add("pagination-arrow");
   fragment.append(next);
 
   const summary = document.createElement("span");
   summary.className = "pagination-summary";
-  summary.textContent = `Trang ${currentPage}/${totalPages}`;
+  summary.textContent = t("pagination.summary", { current: currentPage, total: totalPages });
   fragment.append(summary);
 
   pagination.append(fragment);
@@ -220,12 +221,16 @@ function goToPage(page) {
   if (moviesSection) moviesSection.scrollIntoView({ block: "start" });
 }
 
+function resolveTitle(request) {
+  return typeof request.title === "function" ? request.title() : request.title;
+}
+
 async function runLoad(request, page = 1) {
   const version = ++requestVersion;
   loadState.request = request;
   loadState.page = page;
-  sectionTitle.textContent = request.title;
-  if (request.navLabel !== undefined) setActiveNav(request.navLabel);
+  sectionTitle.textContent = resolveTitle(request);
+  if (request.navKey !== undefined) setActiveNav(request.navKey);
   playPageTransition();
   showLoading();
   renderPagination(1, 0);
@@ -235,6 +240,9 @@ async function runLoad(request, page = 1) {
     const isPlainList = Array.isArray(result);
     const items = isPlainList ? result : result?.items || [];
     renderMovies(items);
+    document.dispatchEvent(new CustomEvent("gz:movies-loaded", {
+      detail: { items, navKey: request.navKey }
+    }));
     const currentPage = Number(isPlainList ? page : result?.pagination?.currentPage) || page;
     const totalPages = Number(isPlainList ? 1 : result?.pagination?.totalPages) || 1;
     loadState.page = currentPage;
@@ -244,20 +252,20 @@ async function runLoad(request, page = 1) {
     if (version !== requestVersion) return;
     console.error("Không tải được danh sách phim:", error);
     showMessage(
-      "Không tải được phim",
-      error?.message || "Kiểm tra kết nối mạng rồi thử lại.",
+      t("state.errorTitle"),
+      error?.message || t("state.errorDesc"),
       () => runLoad(request, page)
     );
   }
 }
 
-function loadMovies(title, loader, navLabel) {
-  return runLoad({ title, loader, navLabel }, 1);
+function loadMovies(title, loader, navKey) {
+  return runLoad({ title, loader, navKey }, 1);
 }
 
 function loadLatestMovies() {
   if (typeof resetFiltersForNavigation === "function") resetFiltersForNavigation();
-  return loadMovies("Phim mới cập nhật", (page) => fetchMovies(page), "Phim mới cập nhật");
+  return loadMovies(() => t("nav.latest"), (page) => fetchMovies(page), "latest");
 }
 
 function initializeNavigation() {

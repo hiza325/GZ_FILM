@@ -4,6 +4,17 @@
 .player-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 17px; align-items: stretch; }
 .video-column { min-width: 0; padding-top: 3px; }
 .player-title { min-height: 20px; margin: 0 54px 12px 0; overflow: hidden; color: #eee; font: 600 15px 'Manrope', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.resume-prompt { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 14px; margin: 0 54px 12px 0; padding: 11px 13px; border: 1px solid rgba(210,179,122,.38); border-radius: 6px; background: rgba(210,179,122,.1); }
+.resume-prompt[hidden] { display: none; }
+.resume-prompt p { margin: 0; color: #e9e8e4; font-size: 12px; line-height: 1.5; }
+.resume-prompt strong { color: var(--accent); font-weight: 700; }
+.resume-prompt span { color: #b9b5ab; }
+.resume-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.resume-actions button { min-height: 32px; padding: 0 13px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 700; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+.resume-continue { border: 1px solid var(--accent); background: var(--accent); color: #171716; }
+.resume-continue:hover { background: #e2c48d; }
+.resume-restart { border: 1px solid var(--line); background: transparent; color: #d9d9dd; }
+.resume-restart:hover { border-color: rgba(255,255,255,.3); color: #fff; }
 #videoPlayer { display: block; width: 100%; max-height: 76vh; aspect-ratio: 16 / 9; border-radius: 7px; background: #000; }
 .close-btn { position: absolute; top: -46px; right: 0; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: #222329; color: white; cursor: pointer; font-size: 25px; line-height: 1; }
 .close-btn:hover { background: #383940; }
@@ -35,6 +46,7 @@ body.modal-open { overflow: hidden; }
   .player-layout { grid-template-columns: 1fr; gap: 14px; }
   .close-btn { position: fixed; top: 12px; right: 12px; z-index: 2; }
   .player-title { padding-right: 46px; }
+  .resume-prompt { margin-right: 0; }
   #videoPlayer { max-height: 47vh; }
   .episode-panel { max-height: 30vh; padding: 12px; }
   .episode-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; }

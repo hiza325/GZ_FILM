@@ -2,7 +2,11 @@ const searchInput = document.getElementById("searchInput");
 let searchTimer;
 
 function runSearch(keyword) {
-  loadMovies(`Kết quả cho “${keyword}”`, (page) => fetchSearch(keyword, page));
+  loadMovies(
+    () => t("search.results", { keyword }),
+    (page) => fetchSearch(keyword, page),
+    ""
+  );
 }
 
 searchInput.addEventListener("input", () => {
@@ -13,8 +17,8 @@ searchInput.addEventListener("input", () => {
     if (!keyword) {
       loadLatestMovies();
     } else {
-      sectionTitle.textContent = "Tìm kiếm phim";
-      showMessage("Nhập thêm một chút", "Từ khóa cần có ít nhất 2 ký tự để tìm phim.");
+      sectionTitle.textContent = t("search.title");
+      showMessage(t("search.tooShortTitle"), t("search.tooShortDesc"));
     }
     return;
   }

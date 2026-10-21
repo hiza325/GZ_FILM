@@ -1,13 +1,55 @@
-.banner { position: relative; min-height: clamp(410px, 48vw, 570px); overflow: hidden; display: flex; align-items: center; padding: 64px max(52px, calc((100vw - var(--page-width))/2)); background: #242528 url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=85&w=2200&auto=format&fit=crop') center 44%/cover no-repeat; }
-.banner::after { position: absolute; content: ''; inset: 0; background: linear-gradient(90deg, rgba(13,14,16,.96) 0%, rgba(13,14,16,.82) 37%, rgba(13,14,16,.25) 75%, rgba(13,14,16,.12) 100%), linear-gradient(0deg, rgba(16,17,20,.96), transparent 38%); }
-.banner-overlay { position: absolute; inset: 0; background: linear-gradient(120deg, transparent 30%, rgba(205,177,125,.06) 100%); }
-.banner-content { position: relative; z-index: 1; max-width: 640px; }
+.banner { position: relative; overflow: hidden; display: flex; align-items: center; min-height: clamp(410px, 48vw, 570px); padding: 64px max(52px, calc((100vw - var(--page-width))/2)); background: #242528 url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=85&w=2200&auto=format&fit=crop') center 44%/cover no-repeat; isolation: isolate; }
+.banner::after { position: absolute; content: ''; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(13,14,16,.96) 0%, rgba(13,14,16,.82) 37%, rgba(13,14,16,.25) 75%, rgba(13,14,16,.12) 100%), linear-gradient(0deg, rgba(16,17,20,.96), transparent 38%); }
+
+/* Lớp ảnh nền của slider: mờ dần + zoom nhẹ khi chuyển phim. */
+.banner-layers { position: absolute; inset: 0; z-index: 0; }
+.banner-layer { position: absolute; inset: 0; background-position: center 30%; background-size: cover; background-repeat: no-repeat; opacity: 0; transform: scale(1.07); transition: opacity .9s ease, transform 9s ease-out; will-change: opacity, transform; }
+.banner-layer.is-active { opacity: 1; transform: scale(1); }
+
+.banner-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(120deg, transparent 30%, rgba(205,177,125,.06) 100%); }
+
+.banner-content { position: relative; z-index: 2; max-width: 640px; transition: opacity .28s ease, transform .28s ease; }
+.banner-content.is-leaving { opacity: 0; transform: translateX(-22px); pointer-events: none; }
+
 .eyebrow { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 20px; color: #ded3bd; font-size: 10px; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; }
 .eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+
 .banner-content h1 { margin: 0 0 16px; font: 700 clamp(40px, 6vw, 72px)/1.05 'Manrope', sans-serif; letter-spacing: -.065em; }
+.banner.has-slider { min-height: clamp(580px, 58vw, 640px); }
+.banner.has-slider .banner-content h1 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: clamp(34px, 4.7vw, 58px); line-height: 1.06; letter-spacing: -.05em; }
+
 .banner-content p { max-width: 410px; margin: 0 0 28px; color: #c3c2c0; font-size: 14px; line-height: 1.8; }
-.banner-btn { min-height: 45px; padding: 0 17px; display: inline-flex; align-items: center; gap: 20px; border-radius: 5px; background: var(--accent); color: #171716; font-size: 12px; font-weight: 700; transition: background .2s ease, transform .2s ease; }
+.banner-content .hero-original { margin: -8px 0 16px; color: #d8c39a; font-size: 13px; line-height: 1.4; }
+.banner-content .banner-desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; max-width: 440px; margin-bottom: 24px; }
+
+.hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 18px; }
+.hero-badge { display: inline-flex; align-items: center; min-height: 24px; padding: 0 9px; border: 1px solid rgba(255,255,255,.22); border-radius: 4px; background: rgba(16,17,20,.4); color: #eceae5; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; backdrop-filter: blur(4px); }
+.hero-badge.is-accent { border-color: rgba(210,179,122,.5); background: rgba(210,179,122,.16); color: #f0dcb4; }
+.hero-rating { display: inline-flex; align-items: center; gap: 5px; color: #f1d9a8; font-size: 11px; font-weight: 700; }
+.hero-rating::before { content: '★'; font-size: 12px; }
+
+.banner-actions { display: flex; align-items: center; gap: 12px; }
+.banner-btn { min-height: 45px; padding: 0 17px; display: inline-flex; align-items: center; gap: 20px; border: 0; border-radius: 5px; background: var(--accent); color: #171716; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 700; transition: background .2s ease, transform .2s ease; }
 .banner-btn:hover { transform: translateY(-2px); background: #e2c48d; }
-.banner-btn span { font-size: 16px; }
-.hero-note { position: absolute; z-index: 1; right: max(52px, calc((100vw - var(--page-width))/2)); bottom: 70px; display: flex; align-items: center; gap: 11px; color: #b7b3ab; font-size: 8px; line-height: 1.6; letter-spacing: .16em; }
+.banner-btn .banner-arrow { font-size: 16px; }
+
+/* Dải thumbnail chọn phim nhanh. */
+.banner-thumbs { position: absolute; z-index: 3; right: max(52px, calc((100vw - var(--page-width))/2)); bottom: 30px; display: flex; align-items: center; gap: 8px; }
+.banner-thumb { width: clamp(52px, 6vw, 86px); height: clamp(29px, 3.35vw, 48px); padding: 0; overflow: hidden; border: 2px solid transparent; border-radius: 6px; background: #17181d; cursor: pointer; opacity: .55; transform: scale(.96); transition: opacity .2s ease, transform .2s ease, border-color .2s ease; }
+.banner-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.banner-thumb:hover { opacity: .9; transform: scale(1); }
+.banner-thumb.is-active { border-color: #f0dcb4; opacity: 1; transform: scale(1.04); box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+.banner-thumb:focus-visible { outline: 2px solid #f0dcb4; outline-offset: 3px; }
+
+.hero-note { position: absolute; z-index: 2; right: max(52px, calc((100vw - var(--page-width))/2)); bottom: 70px; display: flex; align-items: center; gap: 11px; color: #b7b3ab; font-size: 8px; line-height: 1.6; letter-spacing: .16em; }
 .hero-note span:first-child { color: rgba(225,203,162,.65); font: 700 29px 'Manrope', sans-serif; letter-spacing: -.08em; }
+.banner.has-slider .hero-note { display: none; }
+
+@media (max-width: 1050px) {
+  .banner-content .banner-desc { max-width: 380px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-layer { transform: none; transition: opacity .3s ease; }
+  .banner-content { transition: none; }
+}

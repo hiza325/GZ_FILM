@@ -1,12 +1,13 @@
-const categoryLabels = {
-  "phim-bo": "Phim bộ",
-  "phim-le": "Phim lẻ",
-  "hoat-hinh": "Hoạt hình",
-  "tv-shows": "TV Shows"
+const categoryNavKeys = {
+  "phim-bo": "series",
+  "phim-le": "movies",
+  "hoat-hinh": "anime",
+  "tv-shows": "tv"
 };
 
 function loadCategory(type) {
-  const label = categoryLabels[type] || "Phim theo danh mục";
+  const navKey = categoryNavKeys[type] || "";
+  const titleKey = navKey ? `nav.${navKey}` : "category.fallback";
   if (typeof resetFiltersForNavigation === "function") resetFiltersForNavigation(type);
-  return loadMovies(label, (page) => fetchCategory(type, page), label);
+  return loadMovies(() => t(titleKey), (page) => fetchCategory(type, page), navKey);
 }

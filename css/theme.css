@@ -1,0 +1,68 @@
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f4f1;
+  --panel: #e6e3dd;
+  --panel-soft: #ffffff;
+  --text: #17181c;
+  --muted: #63656d;
+  --accent: #a97e2f;
+  --line: rgba(16, 17, 20, .12);
+}
+
+[data-theme="light"] body { background: var(--bg); color: var(--text); }
+[data-theme="light"] .header { background: rgba(245, 244, 241, .94); }
+[data-theme="light"] .nav-link { color: #62646b; }
+[data-theme="light"] .nav-link:hover,
+[data-theme="light"] .nav-link.is-active { color: var(--text); }
+[data-theme="light"] .search-wrap { background: rgba(16, 17, 20, .045); }
+[data-theme="light"] .search-input::placeholder { color: #8a8c93; }
+[data-theme="light"] .search-wrap kbd { color: #74767d; }
+[data-theme="light"] .icon-btn,
+[data-theme="light"] .lang-switch { background: rgba(16, 17, 20, .045); }
+[data-theme="light"] .icon-btn { color: #4d4f56; }
+[data-theme="light"] .icon-btn:hover { color: var(--text); }
+[data-theme="light"] .lang-btn { color: #6c6e75; }
+[data-theme="light"] .lang-btn.is-active { background: rgba(169, 126, 47, .16); color: #6b4d15; }
+
+[data-theme="light"] .filter-control select { background: #fff; color: #2b2c31; border-color: var(--line); }
+[data-theme="light"] .filter-control option { background: #fff; color: #2b2c31; }
+[data-theme="light"] .filter-chevron { border-color: #5f6168; }
+
+[data-theme="light"] .movie-title { color: #1a1b1f; }
+[data-theme="light"] .movie-original-title { color: #74767d; }
+[data-theme="light"] .movie-year { color: #3b3c41; }
+[data-theme="light"] .watch-btn { background: rgba(16, 17, 20, .04); color: var(--text); }
+[data-theme="light"] .watch-btn:hover { background: var(--accent); border-color: var(--accent); color: #171716; }
+[data-theme="light"] .movie-poster-wrap.poster-missing::before { color: #8a8c93; }
+[data-theme="light"] .skeleton-poster,
+[data-theme="light"] .skeleton-line { background: linear-gradient(100deg, #e8e5df 20%, #f4f2ee 38%, #e8e5df 56%); background-size: 200% 100%; }
+
+[data-theme="light"] .pagination-button { background: #fff; color: #4a4b52; }
+[data-theme="light"] .pagination-button.is-current { border-color: var(--accent); background: var(--accent); color: #171716; }
+[data-theme="light"] .pagination-button:hover:not(:disabled):not(.is-current) { background: rgba(169, 126, 47, .08); color: var(--text); }
+
+[data-theme="light"] .continue-name { color: #1a1b1f; }
+[data-theme="light"] .continue-poster.is-empty::before { color: #8a8c93; }
+[data-theme="light"] .continue-progress { background: rgba(16, 17, 20, .18); }
+
+[data-theme="light"] .welcome-card { border-color: rgba(169, 126, 47, .32); background: #fff; box-shadow: 0 24px 70px rgba(20, 20, 25, .18); }
+[data-theme="light"] .welcome-message { color: #2e2f34; }
+[data-theme="light"] .welcome-message span { color: #6a6c73; }
+[data-theme="light"] .welcome-close { background: rgba(16, 17, 20, .06); color: #4c4e55; }
+[data-theme="light"] .welcome-close:hover { background: rgba(16, 17, 20, .12); color: #17181c; }
+
+/* Hero và trình phát luôn nền tối vì chữ trắng nằm trên ảnh/video. */
+[data-theme="light"] .banner { --accent: #d2b37a; }
+[data-theme="light"] .player-modal { --accent: #d2b37a; --text: #f5f5f2; --muted: #999ba5; --line: rgba(255, 255, 255, .09); }
+
+body,
+.header,
+.filter-control select,
+.pagination-button,
+.icon-btn,
+.lang-switch,
+.lang-btn,
+.watch-btn,
+.movie-title,
+.movie-original-title,
+.welcome-card { transition: background-color .25s ease, color .25s ease, border-color .25s ease; }
