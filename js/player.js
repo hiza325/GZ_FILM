@@ -1,47 +1,58 @@
-const playerModal =
-document.getElementById("playerModal");
+const playerModal = document.getElementById("playerModal");
+const videoPlayer = document.getElementById("videoPlayer");
+const closeBtn = document.getElementById("closeBtn");
+const playerTitle = document.getElementById("playerTitle");
+let activeHls = null;
+let lastFocusedElement = null;
 
-const videoPlayer =
-document.getElementById("videoPlayer");
-
-const closeBtn =
-document.getElementById("closeBtn");
-
-async function watchMovie(slug){
-
-  const data =
-  await fetchMovieDetail(slug);
-
-  const episodes =
-  data.episodes[0].server_data;
-
-  const movieLink =
-  episodes[0].link_m3u8;
-
-  playerModal.style.display = "flex";
-
-  if(Hls.isSupported()){
-
-    const hls = new Hls();
-
-    hls.loadSource(movieLink);
-
-    hls.attachMedia(videoPlayer);
-
+function closePlayer() {
+  playerModal.classList.remove("is-open");
+  playerModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+  videoPlayer.pause();
+  videoPlayer.removeAttribute("src");
+  videoPlayer.load();
+  if (activeHls) {
+    activeHls.destroy();
+    activeHls = null;
   }
-
-  else{
-
-    videoPlayer.src = movieLink;
-
-  }
-
+  if (lastFocusedElement?.isConnected) lastFocusedElement.focus();
 }
 
-closeBtn.addEventListener("click", () => {
+async function watchMovie(slug, name = "Đang phát") {
+  lastFocusedElement = document.activeElement;
+  playerTitle.textContent = name;
+  playerModal.classList.add("is-open");
+  playerModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  closeBtn.focus();
+  try {
+    const data = await fetchMovieDetail(slug);
+    const movieLink = data?.episodes?.[0]?.server_data?.[0]?.link_m3u8;
+    if (!movieLink) throw new Error("Phim này chưa có đường dẫn phát.");
+    if (window.Hls && Hls.isSupported()) {
+      if (activeHls) activeHls.destroy();
+      activeHls = new Hls();
+      activeHls.loadSource(movieLink);
+      activeHls.attachMedia(videoPlayer);
+      activeHls.on(Hls.Events.ERROR, (_event, info) => {
+        if (info.fatal) playerTitle.textContent = "Không phát được video. Hãy thử lại sau.";
+      });
+    } else if (videoPlayer.canPlayType("application/vnd.apple.mpegurl")) {
+      videoPlayer.src = movieLink;
+    } else {
+      throw new Error("Trình duyệt này chưa hỗ trợ phát video HLS.");
+    }
+  } catch (error) {
+    console.error("Không mở được phim:", error);
+    playerTitle.textContent = error.message || "Không mở được phim. Vui lòng thử lại.";
+  }
+}
 
-  playerModal.style.display = "none";
-
-  videoPlayer.pause();
-
+closeBtn.addEventListener("click", closePlayer);
+playerModal.addEventListener("click", (event) => {
+  if (event.target === playerModal) closePlayer();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && playerModal.classList.contains("is-open")) closePlayer();
 });

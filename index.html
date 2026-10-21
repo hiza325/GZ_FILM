@@ -1,133 +1,110 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>MovieHub</title>
-
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Khám phá phim mới và phim được yêu thích trên GZ FILM.">
+  <title>GZ FILM — Khám phá phim</title>
+  <link rel="icon" href="assets/gz-film-logo.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/banner.css">
   <link rel="stylesheet" href="css/movie-card.css">
   <link rel="stylesheet" href="css/player.css">
   <link rel="stylesheet" href="css/responsive.css">
-
 </head>
-
 <body>
-
-  <!-- HEADER -->
   <header class="header">
+    <a class="logo" href="#home" aria-label="GZ FILM — Trang chủ">
+      <img src="assets/gz-film-logo.png" alt="GZ FILM">
+      <span>GZ <b>FILM</b></span>
+    </a>
 
-    <div class="logo">
-      MovieHub
-    </div>
-
-    <nav class="nav-menu">
-
-      <button onclick="loadLatestMovies()">
-        Mới cập nhật
-      </button>
-
-      <button onclick="loadCategory('phim-bo')">
-        Phim bộ
-      </button>
-
-      <button onclick="loadCategory('phim-le')">
-        Phim lẻ
-      </button>
-
-      <button onclick="loadCategory('hoat-hinh')">
-        Hoạt hình
-      </button>
-
-      <button onclick="loadCategory('tv-shows')">
-        TV Shows
-      </button>
-
+    <nav class="nav-menu" aria-label="Danh mục phim">
+      <button class="nav-link is-active" type="button" data-label="Phim mới cập nhật" onclick="loadLatestMovies()">Mới cập nhật</button>
+      <button class="nav-link" type="button" data-label="Phim bộ" onclick="loadCategory('phim-bo')">Phim bộ</button>
+      <button class="nav-link" type="button" data-label="Phim lẻ" onclick="loadCategory('phim-le')">Phim lẻ</button>
+      <button class="nav-link" type="button" data-label="Hoạt hình" onclick="loadCategory('hoat-hinh')">Hoạt hình</button>
+      <button class="nav-link" type="button" data-label="TV Shows" onclick="loadCategory('tv-shows')">TV Shows</button>
     </nav>
 
-    <input
-      type="text"
-      id="searchInput"
-      class="search-input"
-      placeholder="Tìm kiếm phim..."
-    >
-
+    <label class="search-wrap" for="searchInput">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg>
+      <input type="search" id="searchInput" class="search-input" placeholder="Tìm tên phim..." autocomplete="off">
+      <kbd>/</kbd>
+    </label>
   </header>
 
-  <!-- BANNER -->
-  <section class="banner">
+  <main id="home">
+    <section class="banner" aria-labelledby="heroTitle">
+      <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Rạp phim của bạn</span>
+        <h1 id="heroTitle">Câu chuyện hay<br>luôn đáng để xem.</h1>
+        <p>Khám phá những bộ phim mới và chọn ngay bộ phim phù hợp với bạn.</p>
+        <a class="banner-btn" href="#movies">Khám phá phim <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-note"><span>GZ</span><span>CHỌN PHIM<br>THEO CÁCH CỦA BẠN</span></div>
+    </section>
 
-    <div class="banner-overlay"></div>
+    <section class="movies-section" id="movies" aria-labelledby="sectionTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">DÀNH CHO BẠN</p>
+          <h2 class="section-title" id="sectionTitle">Phim mới cập nhật</h2>
+        </div>
+        <span class="results-label" id="resultsLabel"></span>
+      </div>
+      <div class="filter-bar" aria-label="Lọc phim">
+        <label class="filter-control">
+          <span class="visually-hidden">Lọc theo thể loại</span>
+          <select id="genreFilter" aria-label="Thể Loại">
+            <option value="">Thể Loại</option>
+          </select>
+          <span class="filter-chevron" aria-hidden="true"></span>
+        </label>
+        <label class="filter-control">
+          <span class="visually-hidden">Lọc theo quốc gia</span>
+          <select id="countryFilter" aria-label="Quốc Gia">
+            <option value="">Quốc Gia</option>
+          </select>
+          <span class="filter-chevron" aria-hidden="true"></span>
+        </label>
+        <label class="filter-control">
+          <span class="visually-hidden">Lọc theo danh sách</span>
+          <select id="listFilter" aria-label="Danh Sách">
+            <option value="phim-moi-cap-nhat">Danh Sách: Mới cập nhật</option>
+            <option value="phim-bo">Danh Sách: Phim bộ</option>
+            <option value="phim-le">Danh Sách: Phim lẻ</option>
+            <option value="hoat-hinh">Danh Sách: Hoạt hình</option>
+            <option value="tv-shows">Danh Sách: TV Shows</option>
+          </select>
+          <span class="filter-chevron" aria-hidden="true"></span>
+        </label>
+        <button class="clear-filters" id="clearFilters" type="button">Xóa lọc</button>
+      </div>
+      <div class="movie-grid" id="movieGrid" aria-live="polite" aria-busy="true"></div>
+    </section>
+  </main>
 
-    <div class="banner-content">
+  <footer class="footer"><a class="footer-brand" href="#home">GZ FILM</a><span>Khám phá câu chuyện bạn yêu thích.</span><a href="#home" class="back-top">Lên đầu trang ↑</a></footer>
 
-      <h1>
-        Xem phim miễn phí chất lượng cao
-      </h1>
-
-      <p>
-        Cập nhật phim mới mỗi ngày.
-      </p>
-
-      <button class="banner-btn">
-        Xem ngay
-      </button>
-
-    </div>
-
-  </section>
-
-  <!-- MOVIES -->
-  <section class="movies-section">
-
-    <h2 class="section-title">
-      Phim mới cập nhật
-    </h2>
-
-    <div
-      class="movie-grid"
-      id="movieGrid"
-    ></div>
-
-  </section>
-
-  <!-- PLAYER -->
-  <div
-    class="player-modal"
-    id="playerModal"
-  >
-
+  <div class="player-modal" id="playerModal" role="dialog" aria-modal="true" aria-label="Trình phát phim" aria-hidden="true">
     <div class="player-box">
-
-      <span
-        class="close-btn"
-        id="closeBtn"
-      >
-        ×
-      </span>
-
-      <video
-        id="videoPlayer"
-        controls
-      ></video>
-
+      <button class="close-btn" id="closeBtn" type="button" aria-label="Đóng trình phát">×</button>
+      <p class="player-title" id="playerTitle">Đang phát</p>
+      <video id="videoPlayer" controls playsinline></video>
+      <p class="player-hint">Nhấn Esc hoặc nút đóng để thoát</p>
     </div>
-
   </div>
 
-  <!-- HLS -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-  <!-- JS -->
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script src="js/player.js"></script>
   <script src="js/search.js"></script>
   <script src="js/category.js"></script>
-
+  <script src="js/filters.js"></script>
 </body>
 </html>
