@@ -37,6 +37,7 @@ const TRANSLATIONS = {
     "filters.aria": "Lọc phim",
     "welcome.message": "Bạn đang xem phim trên <strong>GZ FILM</strong>-<span>A Product of the GZ Group</span>",
     "welcome.closeAria": "Đóng thông báo",
+    "welcome.imageAlt": "Ảnh mèo hài hước",
     "player.title": "Đang phát",
     "player.hint": "Nhấn Esc hoặc nút đóng để thoát",
     "player.kicker": "XEM TIẾP",
@@ -128,6 +129,7 @@ const TRANSLATIONS = {
     "filters.aria": "Filter movies",
     "welcome.message": "You are watching on <strong>GZ FILM</strong>-<span>A Product of the GZ Group</span>",
     "welcome.closeAria": "Close notice",
+    "welcome.imageAlt": "Funny cat image",
     "player.title": "Now playing",
     "player.hint": "Press Esc or the close button to exit",
     "player.kicker": "KEEP WATCHING",
@@ -221,6 +223,10 @@ function applyTranslations() {
 
   document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
     element.setAttribute("aria-label", t(element.dataset.i18nAria));
+  });
+
+  document.querySelectorAll("[data-i18n-alt]").forEach((element) => {
+    element.alt = t(element.dataset.i18nAlt);
   });
 
   document.querySelectorAll(".lang-btn").forEach((button) => {

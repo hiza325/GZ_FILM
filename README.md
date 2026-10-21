@@ -29,7 +29,7 @@ js/player.js          Modal phát phim, HLS, chọn server/tập, tự chuyển 
 js/search.js          Tìm kiếm debounce 350ms, phím tắt "/"
 js/category.js        Điều hướng danh mục (phim bộ/lẻ/hoạt hình/TV shows)
 js/filters.js         Bộ lọc thể loại/quốc gia/danh sách + cache sessionStorage
-js/welcome.js         Popup chào mừng (nhớ trạng thái trong sessionStorage)
+js/welcome.js         Popup chào mừng, đổi ảnh mèo ngẫu nhiên mỗi lượt tải trang
 ```
 
 ## Backend
@@ -68,6 +68,12 @@ Nếu cần tự triển khai backend (proxy, cache, ẩn API key, thêm rate li
 - Tiêu đề, tên gốc, năm, chất lượng, tập hiện tại và mô tả lấy từ API; mô tả được tải riêng cho từng phim khi slide xuất hiện (cache lại).
 - Chất lượng ảnh: ảnh thumb của API thường chỉ 780px. Khi màn hình cần độ phân giải cao hơn (HiDPI), banner tự kiểm tra và nâng cấp sang ảnh poster lớn hơn nếu có; nếu không có bản lớn hơn thì làm nét nhẹ bằng bộ lọc SVG (unsharp mask) để bù phần bị phóng.
 - Nếu API lỗi, banner giữ nguyên nội dung tĩnh mặc định.
+
+## Popup chào mừng
+
+- Hiện ở mỗi lượt tải trang (không còn nhớ trạng thái trong `sessionStorage`).
+- Ảnh trong popup lấy ngẫu nhiên từ `assets/welcome/meme-1..5.jpg`, luôn khác ảnh của lần trước (lưu lựa chọn trong `localStorage`, key `gz-film-welcome-image`).
+- Đóng bằng nút ×, bấm nền tối hoặc phím Esc; vẫn hiện lại ở lần tải trang sau.
 
 ## Giao diện & ngôn ngữ
 
