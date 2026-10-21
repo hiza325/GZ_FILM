@@ -66,6 +66,7 @@ Nếu cần tự triển khai backend (proxy, cache, ẩn API key, thêm rate li
 - Hover hoặc focus vào banner sẽ tạm dừng; tab bị ẩn hoặc đang mở player cũng tạm dừng.
 - Bật `prefers-reduced-motion` thì tắt tự động xoay và hiệu ứng zoom.
 - Tiêu đề, tên gốc, năm, chất lượng, tập hiện tại và mô tả lấy từ API; mô tả được tải riêng cho từng phim khi slide xuất hiện (cache lại).
+- Chất lượng ảnh: ảnh thumb của API thường chỉ 780px. Khi màn hình cần độ phân giải cao hơn (HiDPI), banner tự kiểm tra và nâng cấp sang ảnh poster lớn hơn nếu có; nếu không có bản lớn hơn thì làm nét nhẹ bằng bộ lọc SVG (unsharp mask) để bù phần bị phóng.
 - Nếu API lỗi, banner giữ nguyên nội dung tĩnh mặc định.
 
 ## Giao diện & ngôn ngữ

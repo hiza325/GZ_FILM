@@ -20,6 +20,7 @@
   .banner::after { background: linear-gradient(90deg, rgba(13,14,16,.95), rgba(13,14,16,.56) 75%, rgba(13,14,16,.25)), linear-gradient(0deg, rgba(16,17,20,.94), transparent 45%); }
   .banner-content h1 { font-size: clamp(42px, 8vw, 60px); }
   .banner-layer { background-position: 58% 26%; }
+  .banner-layer-hires { object-position: 58% 26%; }
   .banner.has-slider { min-height: 480px; }
   .banner.has-slider .banner-content h1 { -webkit-line-clamp: 2; font-size: clamp(30px, 7.2vw, 44px); }
   .banner.has-slider .banner-content .banner-desc { -webkit-line-clamp: 2; max-width: 340px; }

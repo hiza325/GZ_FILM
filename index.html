@@ -33,6 +33,11 @@
   <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
+  <svg class="sharpness-filters" aria-hidden="true" focusable="false" width="0" height="0">
+    <filter id="bannerSharpen" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feConvolveMatrix order="3" preserveAlpha="true" kernelMatrix="0 -0.1 0 -0.1 1.4 -0.1 0 -0.1 0"></feConvolveMatrix>
+    </filter>
+  </svg>
   <header class="header">
     <a class="logo" href="#home" aria-label="GZ FILM — Trang chủ" data-i18n-aria="logo.aria">
       <img src="assets/gz-film-logo.png" alt="GZ FILM" width="43" height="43">

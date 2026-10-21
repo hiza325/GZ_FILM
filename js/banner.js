@@ -24,6 +24,7 @@ let paused = false;
 let controlsBound = false;
 const detailCache = new Map();
 const detailPending = new Set();
+const qualityState = new Map();
 
 function bannerImage(movie) {
   const path = movie?.thumb_url || movie?.poster_url || "";
@@ -48,6 +49,71 @@ function truncate(text, max = 190) {
   const cut = text.slice(0, max);
   const lastSpace = cut.lastIndexOf(" ");
   return `${cut.slice(0, lastSpace > 90 ? lastSpace : max).trim()}…`;
+}
+
+function loadImage(src) {
+  return new Promise((resolve) => {
+    if (!src) {
+      resolve(null);
+      return;
+    }
+    const image = new Image();
+    image.decoding = "async";
+    image.addEventListener("load", () => resolve(image), { once: true });
+    image.addEventListener("error", () => resolve(null), { once: true });
+    image.src = src;
+  });
+}
+
+/**
+ * Ảnh thumb của API thường chỉ 780px, trong khi banner ở màn hình HiDPI cần
+ * gấp 2-3 lần. Hàm này kiểm tra độ phân giải thật và nâng cấp sang poster
+ * (thường lớn hơn) nếu có ích, kèm làm nét nhẹ khi buộc phải phóng ảnh.
+ */
+async function ensureLayerQuality(index) {
+  const movie = slides[index];
+  const layer = bannerLayers.children[index];
+  if (!movie || !layer) return;
+
+  if (qualityState.has(movie.slug)) {
+    if (qualityState.get(movie.slug) === "poster") layer.classList.add("has-hires");
+    return;
+  }
+  if (navigator.connection?.saveData) return;
+  qualityState.set(movie.slug, "probing");
+
+  const thumb = await loadImage(bannerImage(movie));
+  const target = bannerSection.clientWidth * Math.min(window.devicePixelRatio || 1, 2);
+  if (!thumb || thumb.naturalWidth * 1.15 >= target) {
+    qualityState.set(movie.slug, "ok");
+    return;
+  }
+
+  layer.classList.add("is-upscaled");
+
+  const poster = await loadImage(posterImage(movie));
+  const worthIt = poster
+    && poster.naturalWidth >= 1200
+    && poster.naturalWidth >= thumb.naturalWidth * 1.35;
+
+  if (!worthIt) {
+    qualityState.set(movie.slug, "none");
+    return;
+  }
+
+  const hires = document.createElement("img");
+  hires.className = "banner-layer-hires";
+  hires.alt = "";
+  hires.decoding = "async";
+  hires.addEventListener("load", () => {
+    hires.classList.add("is-loaded");
+    layer.classList.add("has-hires");
+    layer.classList.remove("is-upscaled");
+  }, { once: true });
+  hires.addEventListener("error", () => hires.remove(), { once: true });
+  hires.src = posterImage(movie);
+  layer.append(hires);
+  qualityState.set(movie.slug, "poster");
 }
 
 function ratingOf(movie, detail) {
@@ -160,6 +226,7 @@ function showSlide(index, { animate = true } = {}) {
   });
   updateThumbState();
   loadDetail(activeIndex);
+  ensureLayerQuality(activeIndex);
 
   window.clearTimeout(switchTimer);
   if (!animate) {
