@@ -4,7 +4,8 @@ const welcomeStorageKey = "gz-film-welcome-dismissed";
 
 function dismissWelcome() {
   welcomeToast.hidden = true;
-  document.body.classList.remove("modal-open");
+  if (typeof syncBodyScroll === "function") syncBodyScroll();
+  else document.body.classList.remove("modal-open");
   try {
     sessionStorage.setItem(welcomeStorageKey, "true");
   } catch (_error) {
@@ -21,7 +22,8 @@ try {
 
 if (!welcomeWasDismissed) {
   welcomeToast.hidden = false;
-  document.body.classList.add("modal-open");
+  if (typeof syncBodyScroll === "function") syncBodyScroll();
+  else document.body.classList.add("modal-open");
   welcomeClose.focus();
 }
 

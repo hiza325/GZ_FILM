@@ -1,14 +1,18 @@
 const searchInput = document.getElementById("searchInput");
 let searchTimer;
 
+function runSearch(keyword) {
+  loadMovies(`Kết quả cho “${keyword}”`, (page) => fetchSearch(keyword, page));
+}
+
 searchInput.addEventListener("input", () => {
   window.clearTimeout(searchTimer);
   ++requestVersion;
   const keyword = searchInput.value.trim();
   if (keyword.length < 2) {
-    if (!keyword) loadLatestMovies();
-    else {
-      ++requestVersion;
+    if (!keyword) {
+      loadLatestMovies();
+    } else {
       sectionTitle.textContent = "Tìm kiếm phim";
       showMessage("Nhập thêm một chút", "Từ khóa cần có ít nhất 2 ký tự để tìm phim.");
     }
@@ -17,12 +21,7 @@ searchInput.addEventListener("input", () => {
 
   if (typeof resetFiltersForNavigation === "function") resetFiltersForNavigation();
   setActiveNav("");
-  searchTimer = window.setTimeout(() => {
-    loadMovies(`Kết quả cho “${keyword}”`, async () => {
-      const data = await fetchSearch(keyword);
-      return data?.data?.items || data?.items || [];
-    });
-  }, 350);
+  searchTimer = window.setTimeout(() => runSearch(keyword), 350);
 });
 
 document.querySelectorAll(".nav-link").forEach((button) => {
@@ -33,14 +32,21 @@ document.querySelectorAll(".nav-link").forEach((button) => {
 });
 
 searchInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    window.clearTimeout(searchTimer);
+  if (event.key !== "Enter") return;
+  window.clearTimeout(searchTimer);
+  const keyword = searchInput.value.trim();
+  if (keyword.length < 2) {
     searchInput.dispatchEvent(new Event("input"));
+    return;
   }
+  if (typeof resetFiltersForNavigation === "function") resetFiltersForNavigation();
+  setActiveNav("");
+  runSearch(keyword);
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+  const tag = document.activeElement?.tagName;
+  if (event.key === "/" && !["INPUT", "TEXTAREA"].includes(tag)) {
     event.preventDefault();
     searchInput.focus();
   }

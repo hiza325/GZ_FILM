@@ -7,6 +7,8 @@
   <meta name="description" content="Khám phá phim mới và phim được yêu thích trên GZ FILM.">
   <title>GZ FILM — Khám phá phim</title>
   <link rel="icon" href="assets/gz-film-logo.png" type="image/png">
+  <link rel="preconnect" href="https://phimimg.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/banner.css">
@@ -17,16 +19,16 @@
 <body>
   <header class="header">
     <a class="logo" href="#home" aria-label="GZ FILM — Trang chủ">
-      <img src="assets/gz-film-logo.png" alt="GZ FILM">
+      <img src="assets/gz-film-logo.png" alt="GZ FILM" width="43" height="43">
       <span>GZ <b>FILM</b></span>
     </a>
 
     <nav class="nav-menu" aria-label="Danh mục phim">
-      <button class="nav-link is-active" type="button" data-label="Phim mới cập nhật" onclick="loadLatestMovies()">Mới cập nhật</button>
-      <button class="nav-link" type="button" data-label="Phim bộ" onclick="loadCategory('phim-bo')">Phim bộ</button>
-      <button class="nav-link" type="button" data-label="Phim lẻ" onclick="loadCategory('phim-le')">Phim lẻ</button>
-      <button class="nav-link" type="button" data-label="Hoạt hình" onclick="loadCategory('hoat-hinh')">Hoạt hình</button>
-      <button class="nav-link" type="button" data-label="TV Shows" onclick="loadCategory('tv-shows')">TV Shows</button>
+      <button class="nav-link is-active" type="button" data-label="Phim mới cập nhật" data-action="latest">Mới cập nhật</button>
+      <button class="nav-link" type="button" data-label="Phim bộ" data-action="category" data-category="phim-bo">Phim bộ</button>
+      <button class="nav-link" type="button" data-label="Phim lẻ" data-action="category" data-category="phim-le">Phim lẻ</button>
+      <button class="nav-link" type="button" data-label="Hoạt hình" data-action="category" data-category="hoat-hinh">Hoạt hình</button>
+      <button class="nav-link" type="button" data-label="TV Shows" data-action="category" data-category="tv-shows">TV Shows</button>
     </nav>
 
     <label class="search-wrap" for="searchInput">
@@ -85,13 +87,14 @@
         <button class="clear-filters" id="clearFilters" type="button">Xóa lọc</button>
       </div>
       <div class="movie-grid" id="movieGrid" aria-live="polite" aria-busy="true"></div>
+      <nav class="pagination" id="pagination" aria-label="Phân trang phim" hidden></nav>
     </section>
   </main>
 
   <div class="welcome-backdrop" id="welcomeToast" role="dialog" aria-modal="true" aria-labelledby="welcomeMessage" hidden>
     <section class="welcome-card">
       <button class="welcome-close" id="welcomeClose" type="button" aria-label="Đóng thông báo">×</button>
-      <img class="welcome-image" src="assets/welcome-meme.jpg" alt="Mèo đội mũ đen tại sân bay">
+      <img class="welcome-image" src="assets/welcome-meme.jpg" alt="Mèo đội mũ đen tại sân bay" width="142" height="142">
       <p class="welcome-message" id="welcomeMessage">Bạn đang xem phim trên <strong>GZ FILM</strong>-<span>A Product of the GZ Group</span></p>
     </section>
   </div>
@@ -103,22 +106,23 @@
       <button class="close-btn" id="closeBtn" type="button" aria-label="Đóng trình phát">×</button>
       <div class="player-layout">
         <section class="video-column" aria-label="Video đang phát">
-          <p class="player-title" id="playerTitle">Đang phát</p>
-          <video id="videoPlayer" controls playsinline></video>
+          <p class="player-title" id="playerTitle" aria-live="polite">Đang phát</p>
+          <video id="videoPlayer" controls playsinline preload="metadata"></video>
           <p class="player-hint">Nhấn Esc hoặc nút đóng để thoát</p>
         </section>
         <aside class="episode-panel" id="episodePanel" aria-label="Danh sách tập" hidden>
           <div class="episode-heading">
-            <div><span class="episode-kicker">XEM TIẾP</span><h2>Các tập</h2></div>
+            <div><span class="episode-kicker">XEM TIẾP</span><h2 id="episodeHeadingTitle">Các tập</h2></div>
             <span class="episode-count" id="episodeCount"></span>
           </div>
+          <div class="server-tabs" id="serverTabs" role="tablist" aria-label="Chọn nguồn phát" hidden></div>
           <div class="episode-list" id="episodeList" role="group" aria-label="Chọn tập phim"></div>
         </aside>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script src="js/player.js"></script>

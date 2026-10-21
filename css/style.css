@@ -35,6 +35,15 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .clear-filters { min-height: 38px; padding: 0 12px; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 11px; }
 .clear-filters:hover { color: var(--accent); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 44px; }
+.pagination[hidden] { display: none; }
+.pagination-button { min-width: 36px; height: 36px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 5px; background: rgba(255,255,255,.03); color: #c9c9ce; cursor: pointer; font-size: 12px; font-weight: 600; transition: background .18s ease, border-color .18s ease, color .18s ease; }
+.pagination-button:hover:not(:disabled):not(.is-current) { border-color: rgba(210,179,122,.6); background: rgba(210,179,122,.08); color: var(--text); }
+.pagination-button.is-current { border-color: var(--accent); background: var(--accent); color: #171716; cursor: default; }
+.pagination-button:disabled { opacity: .32; cursor: not-allowed; }
+.pagination-arrow { font-size: 15px; line-height: 1; }
+.pagination-gap { padding: 0 3px; color: var(--muted); font-size: 12px; }
+.pagination-summary { margin-left: 8px; color: var(--muted); font-size: 11px; }
 .footer { min-height: 84px; border-top: 1px solid var(--line); padding: 20px max(52px, calc((100vw - var(--page-width))/2)); display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 12px; }
 .footer-brand { color: var(--text); font: 800 14px 'Manrope', sans-serif; letter-spacing: .08em; }
 .back-top { color: var(--text); }

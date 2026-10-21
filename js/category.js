@@ -8,8 +8,5 @@ const categoryLabels = {
 function loadCategory(type) {
   const label = categoryLabels[type] || "Phim theo danh mục";
   if (typeof resetFiltersForNavigation === "function") resetFiltersForNavigation(type);
-  return loadMovies(label, async () => {
-    const data = await fetchCategory(type);
-    return data?.data?.items || data?.items || [];
-  }, label);
+  return loadMovies(label, (page) => fetchCategory(type, page), label);
 }
