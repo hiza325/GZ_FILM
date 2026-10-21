@@ -38,7 +38,18 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .footer { min-height: 84px; border-top: 1px solid var(--line); padding: 20px max(52px, calc((100vw - var(--page-width))/2)); display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 12px; }
 .footer-brand { color: var(--text); font: 800 14px 'Manrope', sans-serif; letter-spacing: .08em; }
 .back-top { color: var(--text); }
+.welcome-backdrop { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.76); backdrop-filter: blur(5px); animation: welcome-in .25s ease both; }
+.welcome-backdrop[hidden] { display: none; }
+.welcome-card { position: relative; width: min(100%, 490px); padding: 22px; display: flex; align-items: center; gap: 20px; border: 1px solid rgba(210,179,122,.3); border-radius: 12px; background: #1b1c21; box-shadow: 0 24px 90px rgba(0,0,0,.55); }
+.welcome-image { width: 142px; height: 142px; flex: 0 0 auto; border-radius: 8px; object-fit: cover; }
+.welcome-message { margin: 0; padding-right: 10px; color: #e9e8e4; font-size: 15px; line-height: 1.75; }
+.welcome-message strong { color: var(--accent); }
+.welcome-message span { color: #aaaab1; }
+.welcome-close { position: absolute; top: 9px; right: 9px; width: 30px; height: 30px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(255,255,255,.08); color: #c9c9cc; cursor: pointer; font-size: 21px; }
+.welcome-close:hover { background: rgba(255,255,255,.14); color: white; }
+@keyframes welcome-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .page-enter { animation: page-enter .34s cubic-bezier(.2,.7,.25,1) both; animation-delay: var(--enter-delay, 0ms); }
 @keyframes page-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+@media (max-width: 520px) { .welcome-card { padding: 18px; gap: 14px; } .welcome-image { width: 100px; height: 100px; } .welcome-message { font-size: 12px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

@@ -88,6 +88,14 @@
     </section>
   </main>
 
+  <div class="welcome-backdrop" id="welcomeToast" role="dialog" aria-modal="true" aria-labelledby="welcomeMessage" hidden>
+    <section class="welcome-card">
+      <button class="welcome-close" id="welcomeClose" type="button" aria-label="Đóng thông báo">×</button>
+      <img class="welcome-image" src="assets/welcome-meme.jpg" alt="Mèo đội mũ đen tại sân bay">
+      <p class="welcome-message" id="welcomeMessage">Bạn đang xem phim trên <strong>GZ FILM</strong>-<span>A Product of the GZ Group</span></p>
+    </section>
+  </div>
+
   <footer class="footer"><a class="footer-brand" href="#home">GZ FILM</a><span>Khám phá câu chuyện bạn yêu thích.</span><span class="copyright">Bản quyền thuộc về GZ Group</span><a href="#home" class="back-top">Lên đầu trang ↑</a></footer>
 
   <div class="player-modal" id="playerModal" role="dialog" aria-modal="true" aria-label="Trình phát phim" aria-hidden="true">
@@ -117,5 +125,6 @@
   <script src="js/search.js"></script>
   <script src="js/category.js"></script>
   <script src="js/filters.js"></script>
+  <script src="js/welcome.js"></script>
 </body>
 </html>
