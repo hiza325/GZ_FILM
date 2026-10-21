@@ -1,0 +1,28 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+}
+
+.movies-section{
+  padding:40px;
+}
+
+.section-title{
+  font-size:36px;
+  margin-bottom:30px;
+}
+
+.pagination{
+  margin-top:40px;
+
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}

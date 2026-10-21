@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MovieHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/banner.css">
+  <link rel="stylesheet" href="css/movie-card.css">
+  <link rel="stylesheet" href="css/player.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <div class="logo">
+      MovieHub
+    </div>
+
+    <nav class="nav-menu">
+
+      <button onclick="loadLatestMovies()">
+        Mới cập nhật
+      </button>
+
+      <button onclick="loadCategory('phim-bo')">
+        Phim bộ
+      </button>
+
+      <button onclick="loadCategory('phim-le')">
+        Phim lẻ
+      </button>
+
+      <button onclick="loadCategory('hoat-hinh')">
+        Hoạt hình
+      </button>
+
+      <button onclick="loadCategory('tv-shows')">
+        TV Shows
+      </button>
+
+    </nav>
+
+    <input
+      type="text"
+      id="searchInput"
+      class="search-input"
+      placeholder="Tìm kiếm phim..."
+    >
+
+  </header>
+
+  <!-- BANNER -->
+  <section class="banner">
+
+    <div class="banner-overlay"></div>
+
+    <div class="banner-content">
+
+      <h1>
+        Xem phim miễn phí chất lượng cao
+      </h1>
+
+      <p>
+        Cập nhật phim mới mỗi ngày.
+      </p>
+
+      <button class="banner-btn">
+        Xem ngay
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- MOVIES -->
+  <section class="movies-section">
+
+    <h2 class="section-title">
+      Phim mới cập nhật
+    </h2>
+
+    <div
+      class="movie-grid"
+      id="movieGrid"
+    ></div>
+
+  </section>
+
+  <!-- PLAYER -->
+  <div
+    class="player-modal"
+    id="playerModal"
+  >
+
+    <div class="player-box">
+
+      <span
+        class="close-btn"
+        id="closeBtn"
+      >
+        ×
+      </span>
+
+      <video
+        id="videoPlayer"
+        controls
+      ></video>
+
+    </div>
+
+  </div>
+
+  <!-- HLS -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <!-- JS -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/category.js"></script>
+
+</body>
+</html>
