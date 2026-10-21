@@ -88,14 +88,25 @@
     </section>
   </main>
 
-  <footer class="footer"><a class="footer-brand" href="#home">GZ FILM</a><span>Khám phá câu chuyện bạn yêu thích.</span><a href="#home" class="back-top">Lên đầu trang ↑</a></footer>
+  <footer class="footer"><a class="footer-brand" href="#home">GZ FILM</a><span>Khám phá câu chuyện bạn yêu thích.</span><span class="copyright">Bản quyền thuộc về GZ Group</span><a href="#home" class="back-top">Lên đầu trang ↑</a></footer>
 
   <div class="player-modal" id="playerModal" role="dialog" aria-modal="true" aria-label="Trình phát phim" aria-hidden="true">
     <div class="player-box">
       <button class="close-btn" id="closeBtn" type="button" aria-label="Đóng trình phát">×</button>
-      <p class="player-title" id="playerTitle">Đang phát</p>
-      <video id="videoPlayer" controls playsinline></video>
-      <p class="player-hint">Nhấn Esc hoặc nút đóng để thoát</p>
+      <div class="player-layout">
+        <section class="video-column" aria-label="Video đang phát">
+          <p class="player-title" id="playerTitle">Đang phát</p>
+          <video id="videoPlayer" controls playsinline></video>
+          <p class="player-hint">Nhấn Esc hoặc nút đóng để thoát</p>
+        </section>
+        <aside class="episode-panel" id="episodePanel" aria-label="Danh sách tập" hidden>
+          <div class="episode-heading">
+            <div><span class="episode-kicker">XEM TIẾP</span><h2>Các tập</h2></div>
+            <span class="episode-count" id="episodeCount"></span>
+          </div>
+          <div class="episode-list" id="episodeList" role="group" aria-label="Chọn tập phim"></div>
+        </aside>
+      </div>
     </div>
   </div>
 
