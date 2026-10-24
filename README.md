@@ -1,42 +1,57 @@
 # movie-hub / GZ FILM
 
-Website xem phim (frontend tĩnh) lấy dữ liệu từ API công khai của **phimapi.com** và phát video HLS bằng **hls.js**.
+A movie streaming website (static frontend) that pulls data from the public **phimapi.com** API and plays HLS video with **hls.js**.
 
-## Chạy dự án
+## Running the project
 
-Không cần build. Chỉ cần một static server (mở trực tiếp `index.html` cũng được, nhưng nên chạy server để tránh giới hạn CORS/cache của `file://`):
+No build step. You only need a static server (opening `index.html` directly works too, but prefer a server to avoid `file://` CORS/cache limitations):
 
 ```bash
 python -m http.server 5500
-# hoặc
+# or
 npx serve .
 ```
 
-Sau đó mở `http://localhost:5500`.
+Then open `http://localhost:5500`.
 
-## Cấu trúc
+## Deploy
+
+The site is 100% static with no build step. The quickest option is **GitHub Pages**:
+
+1. Go to the repo → **Settings → Pages**.
+2. **Source**: `Deploy from a branch` → **Branch**: `main` → folder `/ (root)` → **Save**.
+3. Wait ~1 minute; the site is live at `https://hiza325.github.io/movie-hub/`.
+
+Every path in the project is relative, so it works both on a custom domain and in a subdirectory (tested with `/movie-hub/`). The `.nojekyll` file is included so Pages does not process the site through Jekyll.
+
+Deploy notes:
+- Movie data and images depend on `phimapi.com` / `phimimg.com` (third parties, no SLA).
+- `hls.js` is loaded from jsDelivr; if that CDN is blocked, download it to `js/vendor/hls.min.js` and update the path in `index.html`.
+- If you deploy to a different domain, update `og:image` in `index.html` with the correct URL.
+
+## Structure
 
 ```
-index.html            Trang duy nhất: header, banner, bộ lọc, lưới phim, modal player
+index.html            Single page: header, banner, filters, movie grid, player modal
 css/                  style, header, banner, movie-card, player, responsive, theme
-js/api.js             Lớp gọi API + chuẩn hóa dữ liệu/phân trang
-js/i18n.js            Từ điển VI/EN + áp dụng bản dịch cho toàn bộ giao diện
-js/theme.js           Chuyển giao diện sáng/tối
-js/history.js         Lịch sử xem + khối "Tiếp tục xem" ở trang chủ
-js/app.js             Render lưới phim, skeleton, phân trang, điều phối request
-js/banner.js          Hero slider: ảnh nền chuyển động, thumbnail chọn phim, tự động xoay
-js/player.js          Modal phát phim, HLS, chọn server/tập, tự chuyển tập
-js/search.js          Tìm kiếm debounce 350ms, phím tắt "/"
-js/category.js        Điều hướng danh mục (phim bộ/lẻ/hoạt hình/TV shows)
-js/filters.js         Bộ lọc thể loại/quốc gia/danh sách + cache sessionStorage
-js/welcome.js         Popup chào mừng, đổi ảnh mèo ngẫu nhiên mỗi lượt tải trang
+js/api.js             API layer + data/pagination normalization
+js/i18n.js            VI/EN dictionaries + translation applied across the whole UI
+js/theme.js           Light/dark theme toggle
+js/history.js         Watch history + the "Continue watching" section on the home page
+js/app.js             Movie grid rendering, skeleton, pagination, request orchestration
+js/banner.js          Hero slider: animated background, movie thumbnails, auto-rotation
+js/player.js          Player modal, HLS, server/episode selection, auto next episode
+js/search.js          Search with 350ms debounce, "/" keyboard shortcut
+js/category.js        Category navigation (series/single/animation/TV shows)
+js/filters.js         Genre/country/list filters + sessionStorage cache
+js/welcome.js         Welcome popup, random cat image on every page load
 ```
 
 ## Backend
 
-Repo **không chứa code backend**. Toàn bộ dữ liệu đến từ dịch vụ bên thứ ba `https://phimapi.com`:
+This repo **contains no backend code**. All data comes from the third-party service `https://phimapi.com`:
 
-| Hàm trong `api.js` | Endpoint |
+| Function in `api.js` | Endpoint |
 |---|---|
 | `fetchMovies(page)` | `GET /danh-sach/phim-moi-cap-nhat?page=` |
 | `fetchMovieDetail(slug)` | `GET /phim/{slug}` |
@@ -45,40 +60,40 @@ Repo **không chứa code backend**. Toàn bộ dữ liệu đến từ dịch v
 | `fetchFilteredMovies({list, genre, country, page})` | `GET /v1/api/danh-sach/{list}?page=&category=&country=` |
 | `fetchFilterOptions(type)` | `GET /v1/api/{the-loai|quoc-gia}` |
 
-Phản hồi được chuẩn hóa trong `normalizeList()` vì API v1 đặt dữ liệu ở `data.items` và phân trang ở `data.params.pagination`, còn endpoint cũ đặt `items`/`pagination` ở gốc.
+Responses are normalized in `normalizeList()` because the v1 API puts data in `data.items` and pagination in `data.params.pagination`, while the older endpoint puts `items`/`pagination` at the root.
 
-Nếu cần tự triển khai backend (proxy, cache, ẩn API key, thêm rate limit), có thể dựng một service mỏng giữ nguyên contract trên rồi đổi `BASE_URL` trong `js/api.js`.
+If you need your own backend (proxy, caching, hiding API keys, adding rate limits), you can build a thin service that keeps the same contract and then change `BASE_URL` in `js/api.js`.
 
-## Lịch sử xem
+## Watch history
 
-- Lưu trong `localStorage`, key `gz-film-history-v1` (tối đa 24 phim, gần nhất trước).
-- Mỗi lần phát, vị trí được ghi mỗi 5 giây và khi đóng player / ẩn tab / thoát trang.
-- Trang chủ hiện khối **"Tiếp tục xem"** (tối đa 8 phim) kèm thanh tiến độ và số tập.
-- Mở lại phim đã xem dở sẽ hỏi **"Xem tiếp"** hoặc **"Xem lại từ đầu"**.
-- Phim xem gần hết (còn < 5 giây) hoặc dưới 5 giây đầu sẽ không được lưu.
-- Nút **"Xoá lịch sử"** trong khối Tiếp tục xem để reset toàn bộ.
-- Dữ liệu chỉ nằm trên máy người dùng, không gửi lên server.
+- Stored in `localStorage` under the key `gz-film-history-v1` (up to 24 movies, most recent first).
+- While playing, the position is saved every 5 seconds and when the player is closed / the tab is hidden / the page is left.
+- The home page shows a **"Continue watching"** section (up to 8 movies) with a progress bar and episode number.
+- Reopening a partially watched movie asks **"Resume"** or **"Start over"**.
+- Movies watched almost to the end (under 5 seconds remaining) or in the first 5 seconds are not saved.
+- A **"Clear history"** button in the Continue watching section resets everything.
+- Data stays on the user's machine and is never sent to a server.
 
 ## Hero slider
 
-- Banner lấy 6 phim mới nhất, tự chuyển mỗi 7 giây với hiệu ứng mờ dần + zoom nhẹ; chữ trượt sang trái rồi hiện lại.
-- Dải thumbnail ở góc phải (và vuốt trái/phải trên mobile) để chọn phim; phím ← → khi focus vào thumbnail.
-- Hover hoặc focus vào banner sẽ tạm dừng; tab bị ẩn hoặc đang mở player cũng tạm dừng.
-- Bật `prefers-reduced-motion` thì tắt tự động xoay và hiệu ứng zoom.
-- Tiêu đề, tên gốc, năm, chất lượng, tập hiện tại và mô tả lấy từ API; mô tả được tải riêng cho từng phim khi slide xuất hiện (cache lại).
-- Chất lượng ảnh: ảnh thumb của API thường chỉ 780px. Khi màn hình cần độ phân giải cao hơn (HiDPI), banner tự kiểm tra và nâng cấp sang ảnh poster lớn hơn nếu có; nếu không có bản lớn hơn thì làm nét nhẹ bằng bộ lọc SVG (unsharp mask) để bù phần bị phóng.
-- Nếu API lỗi, banner giữ nguyên nội dung tĩnh mặc định.
+- The banner picks the 6 newest movies and auto-advances every 7 seconds with a fade + slight zoom; text slides left and then reappears.
+- A thumbnail strip in the right corner (and left/right swipes on mobile) selects a movie; the ← → keys work when a thumbnail is focused.
+- Hovering or focusing the banner pauses it; a hidden tab or an open player pauses it too.
+- With `prefers-reduced-motion` enabled, auto-rotation and the zoom effect are disabled.
+- Title, original title, year, quality, current episode and description come from the API; the description is fetched separately for each movie when its slide appears (and cached).
+- Image quality: API thumbnails are usually only 780px. When the screen needs more resolution (HiDPI), the banner checks and upgrades to a larger poster if one exists; if not, it applies a light sharpening filter (SVG unsharp mask) to compensate for the upscaling.
+- If the API fails, the banner keeps its default static content.
 
-## Popup chào mừng
+## Welcome popup
 
-- Hiện ở mỗi lượt tải trang (không còn nhớ trạng thái trong `sessionStorage`).
-- Ảnh trong popup lấy ngẫu nhiên từ `assets/welcome/meme-1..5.jpg`, luôn khác ảnh của lần trước (lưu lựa chọn trong `localStorage`, key `gz-film-welcome-image`).
-- Đóng bằng nút ×, bấm nền tối hoặc phím Esc; vẫn hiện lại ở lần tải trang sau.
+- Shown on every page load (state is no longer remembered in `sessionStorage`).
+- The image is picked at random from `assets/welcome/meme-1..5.jpg`, always different from the previous one (the choice is stored in `localStorage` under the key `gz-film-welcome-image`).
+- Close it with the × button, by clicking the dark backdrop, or with the Esc key; it appears again on the next page load.
 
-## Giao diện & ngôn ngữ
+## UI & language
 
-- **Sáng/tối**: nút ở góc phải header, lưu lựa chọn trong `localStorage` (`gz-film-theme`). Lần đầu truy cập sẽ theo cài đặt hệ điều hành (`prefers-color-scheme`). Theme được áp trước khi CSS tải để không bị nháy màu.
-- **VI/EN**: hai nút cờ ở header, lưu trong `localStorage` (`gz-film-lang`), mặc định là tiếng Việt.
-- Toàn bộ chuỗi giao diện nằm trong `js/i18n.js` và dịch qua `data-i18n`, `data-i18n-html`, `data-i18n-placeholder`, `data-i18n-aria`, hoặc hàm `t(key, vars)` trong JS.
-- Banner hero và trình phát video luôn giữ nền tối ở cả hai theme vì chữ trắng nằm trên ảnh/video.
-- Tên thể loại/quốc gia và tên phim/tập là dữ liệu từ API nên vẫn hiển thị theo ngôn ngữ gốc.
+- **Light/dark**: button in the top-right of the header, stored in `localStorage` (`gz-film-theme`). On the first visit it follows the OS setting (`prefers-color-scheme`). The theme is applied before the CSS loads to avoid a flash of wrong colors.
+- **VI/EN**: two flag buttons in the header, stored in `localStorage` (`gz-film-lang`), defaulting to Vietnamese.
+- All UI strings live in `js/i18n.js` and are translated through `data-i18n`, `data-i18n-html`, `data-i18n-placeholder`, `data-i18n-aria`, or the `t(key, vars)` function in JS.
+- The hero banner and the video player always stay dark in both themes because white text sits on images/video.
+- Genre/country names and movie/episode titles are API data, so they still display in their original language.
